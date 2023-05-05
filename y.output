@@ -1,0 +1,1968 @@
+State 4 conflicts: 1 shift/reduce
+State 100 conflicts: 5 shift/reduce
+State 123 conflicts: 10 shift/reduce
+State 124 conflicts: 5 shift/reduce
+State 125 conflicts: 5 shift/reduce
+State 126 conflicts: 5 shift/reduce
+State 127 conflicts: 5 shift/reduce
+State 128 conflicts: 5 shift/reduce
+State 129 conflicts: 10 shift/reduce
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: lines end_line
+
+    2 lines: line lines
+    3      | line
+
+    4 end_line: LINE_NO SPACE END
+
+    5 line: LINE_NO SPACE stmt ENDL
+
+    6 stmt: data_stmt
+    7     | fun_def_stmt
+    8     | dim_def_stmt
+    9     | var_def_stmt
+   10     | in_stmt
+   11     | out_stmt
+   12     | assign_stmt
+   13     | iterative_stmt
+   14     | control_stmt
+   15     | fun_call_stmt
+   16     | STOP
+   17     | goto_stmt
+   18     | comment_stmt
+   19     | return_call_stmt
+   20     | next_stmt
+
+   21 expr: num_expr
+   22     | rel_expr
+   23     | log_expr
+   24     | NUM_LITERAL
+   25     | FLOAT_LITERAL
+   26     | STR_LITERAL
+   27     | var
+
+   28 var2: TYPE
+   29     | /* empty */
+
+   30 var: VAR_NAME var2
+   31    | DIM_VAR
+
+   32 data_stmt: DATA SPACE values
+
+   33 values: value COMMA SPACE values
+   34       | value
+
+   35 value: STR_LITERAL
+   36      | NUM_LITERAL
+   37      | FLOAT_LITERAL
+
+   38 var_def_stmt: LET SPACE assign_stmt
+
+   39 dim_def_stmt: DIM SPACE DIM_VAR
+
+   40 fun_def_stmt: DEF SPACE FUN_NAME eq_stmt num_expr
+   41             | DEF SPACE FUN_NAME OBRACE var CBRACE eq_stmt num_expr
+
+   42 in_stmt: INPUT SPACE variable_names
+
+   43 variable_names: variable_names COMMA SPACE var
+   44               | var
+
+   45 out_stmt: PRINT SPACE things
+
+   46 things: thing delimiter things
+   47       | thing
+   48       | /* empty */
+
+   49 delimiter: COMMA
+   50          | SEMICOLON
+
+   51 thing: var
+   52      | num_expr
+   53      | NUM_LITERAL
+   54      | FLOAT_LITERAL
+   55      | STR_LITERAL
+
+   56 eq_stmt: SPACE EQ_OP SPACE
+   57        | SPACE EQ_OP
+   58        | EQ_OP SPACE
+   59        | EQ_OP
+
+   60 assign_stmt: var eq_stmt num_expr
+   61            | var eq_stmt STR_LITERAL
+   62            | var eq_stmt var
+   63            | var eq_stmt NUM_LITERAL
+   64            | var eq_stmt FLOAT_LITERAL
+
+   65 fun_call_stmt: GOSUB SPACE NUM_LITERAL
+
+   66 return_call_stmt: RETURN
+
+   67 goto_stmt: GOTO SPACE NUM_LITERAL
+
+   68 comment_stmt: REM
+
+   69 control_stmt: IF SPACE rel_expr THEN NUM_LITERAL
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE assign_stmt SPACE TO SPACE num_expr lines SPACE NEXT SPACE var
+
+   72 next_stmt: NEXT VAR_NAME
+
+   73 num_expr: expr '+' expr
+   74         | expr '-' expr
+   75         | expr '*' expr
+   76         | expr '/' expr
+   77         | expr '^' expr
+   78         | '-' expr
+   79         | OBRACE expr CBRACE
+
+   80 rel_expr: expr rel_op expr
+
+   81 rel_op: RELATIONAL_OP
+   82       | '<'
+   83       | '>'
+   84       | EQ_OP
+
+   85 log_expr: expr LOGICAL_OP expr
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'*' (42) 75
+'+' (43) 73
+'-' (45) 74 78
+'/' (47) 76
+'<' (60) 82
+'>' (62) 83
+'^' (94) 77
+error (256)
+LINE_NO (258) 4 5
+STR_LITERAL (259) 26 35 55 61
+LOGICAL_OP (260) 85
+NUM_LITERAL (261) 24 36 53 63 65 67 69
+FLOAT_LITERAL (262) 25 37 54 64
+DIM_VAR (263) 31 39
+OBRACE (264) 41 79
+CBRACE (265) 41 79
+VAR_NAME (266) 30 72
+FUN_NAME (267) 40 41
+ENDL (268) 5 70
+RELATIONAL_OP (269) 81
+PRINT (270) 45
+DATA (271) 32
+INPUT (272) 42
+LET (273) 38
+GOTO (274) 67
+GOSUB (275) 65
+REM (276) 68
+DIM (277) 39
+IF (278) 69
+THEN (279) 69
+FOR (280) 70 71
+TO (281) 70 71
+STEP (282) 70
+NEXT (283) 71 72
+RETURN (284) 66
+STOP (285) 16
+END (286) 4
+DEF (287) 40 41
+TYPE (288) 28
+EQ_OP (289) 56 57 58 59 84
+SPACE (290) 4 5 32 33 38 39 40 41 42 43 45 56 57 58 65 67 69 70 71
+COMMA (291) 33 43 49
+SEMICOLON (292) 50
+
+
+Nonterminals, with rules where they appear
+
+$accept (45)
+    on left: 0
+program (46)
+    on left: 1, on right: 0
+lines (47)
+    on left: 2 3, on right: 1 2 70 71
+end_line (48)
+    on left: 4, on right: 1
+line (49)
+    on left: 5, on right: 2 3
+stmt (50)
+    on left: 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20,
+    on right: 5
+expr (51)
+    on left: 21 22 23 24 25 26 27, on right: 73 74 75 76 77 78 79 80
+    85
+var2 (52)
+    on left: 28 29, on right: 30
+var (53)
+    on left: 30 31, on right: 27 41 43 44 51 60 61 62 63 64 71
+data_stmt (54)
+    on left: 32, on right: 6
+values (55)
+    on left: 33 34, on right: 32 33
+value (56)
+    on left: 35 36 37, on right: 33 34
+var_def_stmt (57)
+    on left: 38, on right: 9
+dim_def_stmt (58)
+    on left: 39, on right: 8
+fun_def_stmt (59)
+    on left: 40 41, on right: 7
+in_stmt (60)
+    on left: 42, on right: 10
+variable_names (61)
+    on left: 43 44, on right: 42 43
+out_stmt (62)
+    on left: 45, on right: 11
+things (63)
+    on left: 46 47 48, on right: 45 46
+delimiter (64)
+    on left: 49 50, on right: 46
+thing (65)
+    on left: 51 52 53 54 55, on right: 46 47
+eq_stmt (66)
+    on left: 56 57 58 59, on right: 40 41 60 61 62 63 64
+assign_stmt (67)
+    on left: 60 61 62 63 64, on right: 12 38 70 71
+fun_call_stmt (68)
+    on left: 65, on right: 15
+return_call_stmt (69)
+    on left: 66, on right: 19
+goto_stmt (70)
+    on left: 67, on right: 17
+comment_stmt (71)
+    on left: 68, on right: 18
+control_stmt (72)
+    on left: 69, on right: 14
+iterative_stmt (73)
+    on left: 70 71, on right: 13
+next_stmt (74)
+    on left: 72, on right: 20
+num_expr (75)
+    on left: 73 74 75 76 77 78 79, on right: 21 40 41 52 60 70 71
+rel_expr (76)
+    on left: 80, on right: 22 69
+rel_op (77)
+    on left: 81 82 83 84, on right: 80
+log_expr (78)
+    on left: 85, on right: 23
+
+
+state 0
+
+    0 $accept: . program $end
+
+    LINE_NO  shift, and go to state 1
+
+    program  go to state 2
+    lines    go to state 3
+    line     go to state 4
+
+
+state 1
+
+    5 line: LINE_NO . SPACE stmt ENDL
+
+    SPACE  shift, and go to state 5
+
+
+state 2
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 6
+
+
+state 3
+
+    1 program: lines . end_line
+
+    LINE_NO  shift, and go to state 7
+
+    end_line  go to state 8
+
+
+state 4
+
+    2 lines: line . lines
+    3      | line .
+
+    LINE_NO  shift, and go to state 1
+
+    LINE_NO   [reduce using rule 3 (lines)]
+    $default  reduce using rule 3 (lines)
+
+    lines  go to state 9
+    line   go to state 4
+
+
+state 5
+
+    5 line: LINE_NO SPACE . stmt ENDL
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+    PRINT     shift, and go to state 12
+    DATA      shift, and go to state 13
+    INPUT     shift, and go to state 14
+    LET       shift, and go to state 15
+    GOTO      shift, and go to state 16
+    GOSUB     shift, and go to state 17
+    REM       shift, and go to state 18
+    DIM       shift, and go to state 19
+    IF        shift, and go to state 20
+    FOR       shift, and go to state 21
+    NEXT      shift, and go to state 22
+    RETURN    shift, and go to state 23
+    STOP      shift, and go to state 24
+    DEF       shift, and go to state 25
+
+    stmt              go to state 26
+    var               go to state 27
+    data_stmt         go to state 28
+    var_def_stmt      go to state 29
+    dim_def_stmt      go to state 30
+    fun_def_stmt      go to state 31
+    in_stmt           go to state 32
+    out_stmt          go to state 33
+    assign_stmt       go to state 34
+    fun_call_stmt     go to state 35
+    return_call_stmt  go to state 36
+    goto_stmt         go to state 37
+    comment_stmt      go to state 38
+    control_stmt      go to state 39
+    iterative_stmt    go to state 40
+    next_stmt         go to state 41
+
+
+state 6
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+state 7
+
+    4 end_line: LINE_NO . SPACE END
+
+    SPACE  shift, and go to state 42
+
+
+state 8
+
+    1 program: lines end_line .
+
+    $default  reduce using rule 1 (program)
+
+
+state 9
+
+    2 lines: line lines .
+
+    $default  reduce using rule 2 (lines)
+
+
+state 10
+
+   31 var: DIM_VAR .
+
+    $default  reduce using rule 31 (var)
+
+
+state 11
+
+   30 var: VAR_NAME . var2
+
+    TYPE  shift, and go to state 43
+
+    $default  reduce using rule 29 (var2)
+
+    var2  go to state 44
+
+
+state 12
+
+   45 out_stmt: PRINT . SPACE things
+
+    SPACE  shift, and go to state 45
+
+
+state 13
+
+   32 data_stmt: DATA . SPACE values
+
+    SPACE  shift, and go to state 46
+
+
+state 14
+
+   42 in_stmt: INPUT . SPACE variable_names
+
+    SPACE  shift, and go to state 47
+
+
+state 15
+
+   38 var_def_stmt: LET . SPACE assign_stmt
+
+    SPACE  shift, and go to state 48
+
+
+state 16
+
+   67 goto_stmt: GOTO . SPACE NUM_LITERAL
+
+    SPACE  shift, and go to state 49
+
+
+state 17
+
+   65 fun_call_stmt: GOSUB . SPACE NUM_LITERAL
+
+    SPACE  shift, and go to state 50
+
+
+state 18
+
+   68 comment_stmt: REM .
+
+    $default  reduce using rule 68 (comment_stmt)
+
+
+state 19
+
+   39 dim_def_stmt: DIM . SPACE DIM_VAR
+
+    SPACE  shift, and go to state 51
+
+
+state 20
+
+   69 control_stmt: IF . SPACE rel_expr THEN NUM_LITERAL
+
+    SPACE  shift, and go to state 52
+
+
+state 21
+
+   70 iterative_stmt: FOR . SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR . SPACE assign_stmt SPACE TO SPACE num_expr lines SPACE NEXT SPACE var
+
+    SPACE  shift, and go to state 53
+
+
+state 22
+
+   72 next_stmt: NEXT . VAR_NAME
+
+    VAR_NAME  shift, and go to state 54
+
+
+state 23
+
+   66 return_call_stmt: RETURN .
+
+    $default  reduce using rule 66 (return_call_stmt)
+
+
+state 24
+
+   16 stmt: STOP .
+
+    $default  reduce using rule 16 (stmt)
+
+
+state 25
+
+   40 fun_def_stmt: DEF . SPACE FUN_NAME eq_stmt num_expr
+   41             | DEF . SPACE FUN_NAME OBRACE var CBRACE eq_stmt num_expr
+
+    SPACE  shift, and go to state 55
+
+
+state 26
+
+    5 line: LINE_NO SPACE stmt . ENDL
+
+    ENDL  shift, and go to state 56
+
+
+state 27
+
+   60 assign_stmt: var . eq_stmt num_expr
+   61            | var . eq_stmt STR_LITERAL
+   62            | var . eq_stmt var
+   63            | var . eq_stmt NUM_LITERAL
+   64            | var . eq_stmt FLOAT_LITERAL
+
+    EQ_OP  shift, and go to state 57
+    SPACE  shift, and go to state 58
+
+    eq_stmt  go to state 59
+
+
+state 28
+
+    6 stmt: data_stmt .
+
+    $default  reduce using rule 6 (stmt)
+
+
+state 29
+
+    9 stmt: var_def_stmt .
+
+    $default  reduce using rule 9 (stmt)
+
+
+state 30
+
+    8 stmt: dim_def_stmt .
+
+    $default  reduce using rule 8 (stmt)
+
+
+state 31
+
+    7 stmt: fun_def_stmt .
+
+    $default  reduce using rule 7 (stmt)
+
+
+state 32
+
+   10 stmt: in_stmt .
+
+    $default  reduce using rule 10 (stmt)
+
+
+state 33
+
+   11 stmt: out_stmt .
+
+    $default  reduce using rule 11 (stmt)
+
+
+state 34
+
+   12 stmt: assign_stmt .
+
+    $default  reduce using rule 12 (stmt)
+
+
+state 35
+
+   15 stmt: fun_call_stmt .
+
+    $default  reduce using rule 15 (stmt)
+
+
+state 36
+
+   19 stmt: return_call_stmt .
+
+    $default  reduce using rule 19 (stmt)
+
+
+state 37
+
+   17 stmt: goto_stmt .
+
+    $default  reduce using rule 17 (stmt)
+
+
+state 38
+
+   18 stmt: comment_stmt .
+
+    $default  reduce using rule 18 (stmt)
+
+
+state 39
+
+   14 stmt: control_stmt .
+
+    $default  reduce using rule 14 (stmt)
+
+
+state 40
+
+   13 stmt: iterative_stmt .
+
+    $default  reduce using rule 13 (stmt)
+
+
+state 41
+
+   20 stmt: next_stmt .
+
+    $default  reduce using rule 20 (stmt)
+
+
+state 42
+
+    4 end_line: LINE_NO SPACE . END
+
+    END  shift, and go to state 60
+
+
+state 43
+
+   28 var2: TYPE .
+
+    $default  reduce using rule 28 (var2)
+
+
+state 44
+
+   30 var: VAR_NAME var2 .
+
+    $default  reduce using rule 30 (var)
+
+
+state 45
+
+   45 out_stmt: PRINT SPACE . things
+
+    STR_LITERAL    shift, and go to state 61
+    NUM_LITERAL    shift, and go to state 62
+    FLOAT_LITERAL  shift, and go to state 63
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    $default  reduce using rule 48 (things)
+
+    expr      go to state 66
+    var       go to state 67
+    things    go to state 68
+    thing     go to state 69
+    num_expr  go to state 70
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 46
+
+   32 data_stmt: DATA SPACE . values
+
+    STR_LITERAL    shift, and go to state 73
+    NUM_LITERAL    shift, and go to state 74
+    FLOAT_LITERAL  shift, and go to state 75
+
+    values  go to state 76
+    value   go to state 77
+
+
+state 47
+
+   42 in_stmt: INPUT SPACE . variable_names
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+
+    var             go to state 78
+    variable_names  go to state 79
+
+
+state 48
+
+   38 var_def_stmt: LET SPACE . assign_stmt
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+
+    var          go to state 27
+    assign_stmt  go to state 80
+
+
+state 49
+
+   67 goto_stmt: GOTO SPACE . NUM_LITERAL
+
+    NUM_LITERAL  shift, and go to state 81
+
+
+state 50
+
+   65 fun_call_stmt: GOSUB SPACE . NUM_LITERAL
+
+    NUM_LITERAL  shift, and go to state 82
+
+
+state 51
+
+   39 dim_def_stmt: DIM SPACE . DIM_VAR
+
+    DIM_VAR  shift, and go to state 83
+
+
+state 52
+
+   69 control_stmt: IF SPACE . rel_expr THEN NUM_LITERAL
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 66
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 89
+    log_expr  go to state 72
+
+
+state 53
+
+   70 iterative_stmt: FOR SPACE . assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE . assign_stmt SPACE TO SPACE num_expr lines SPACE NEXT SPACE var
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+
+    var          go to state 27
+    assign_stmt  go to state 90
+
+
+state 54
+
+   72 next_stmt: NEXT VAR_NAME .
+
+    $default  reduce using rule 72 (next_stmt)
+
+
+state 55
+
+   40 fun_def_stmt: DEF SPACE . FUN_NAME eq_stmt num_expr
+   41             | DEF SPACE . FUN_NAME OBRACE var CBRACE eq_stmt num_expr
+
+    FUN_NAME  shift, and go to state 91
+
+
+state 56
+
+    5 line: LINE_NO SPACE stmt ENDL .
+
+    $default  reduce using rule 5 (line)
+
+
+state 57
+
+   58 eq_stmt: EQ_OP . SPACE
+   59        | EQ_OP .
+
+    SPACE  shift, and go to state 92
+
+    $default  reduce using rule 59 (eq_stmt)
+
+
+state 58
+
+   56 eq_stmt: SPACE . EQ_OP SPACE
+   57        | SPACE . EQ_OP
+
+    EQ_OP  shift, and go to state 93
+
+
+state 59
+
+   60 assign_stmt: var eq_stmt . num_expr
+   61            | var eq_stmt . STR_LITERAL
+   62            | var eq_stmt . var
+   63            | var eq_stmt . NUM_LITERAL
+   64            | var eq_stmt . FLOAT_LITERAL
+
+    STR_LITERAL    shift, and go to state 94
+    NUM_LITERAL    shift, and go to state 95
+    FLOAT_LITERAL  shift, and go to state 96
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 66
+    var       go to state 97
+    num_expr  go to state 98
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 60
+
+    4 end_line: LINE_NO SPACE END .
+
+    $default  reduce using rule 4 (end_line)
+
+
+state 61
+
+   26 expr: STR_LITERAL .
+   55 thing: STR_LITERAL .
+
+    ENDL       reduce using rule 55 (thing)
+    COMMA      reduce using rule 55 (thing)
+    SEMICOLON  reduce using rule 55 (thing)
+    $default   reduce using rule 26 (expr)
+
+
+state 62
+
+   24 expr: NUM_LITERAL .
+   53 thing: NUM_LITERAL .
+
+    ENDL       reduce using rule 53 (thing)
+    COMMA      reduce using rule 53 (thing)
+    SEMICOLON  reduce using rule 53 (thing)
+    $default   reduce using rule 24 (expr)
+
+
+state 63
+
+   25 expr: FLOAT_LITERAL .
+   54 thing: FLOAT_LITERAL .
+
+    ENDL       reduce using rule 54 (thing)
+    COMMA      reduce using rule 54 (thing)
+    SEMICOLON  reduce using rule 54 (thing)
+    $default   reduce using rule 25 (expr)
+
+
+state 64
+
+   79 num_expr: OBRACE . expr CBRACE
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 99
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 65
+
+   78 num_expr: '-' . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 100
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 66
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '+'            shift, and go to state 104
+    '-'            shift, and go to state 105
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    rel_op  go to state 111
+
+
+state 67
+
+   27 expr: var .
+   51 thing: var .
+
+    ENDL       reduce using rule 51 (thing)
+    COMMA      reduce using rule 51 (thing)
+    SEMICOLON  reduce using rule 51 (thing)
+    $default   reduce using rule 27 (expr)
+
+
+state 68
+
+   45 out_stmt: PRINT SPACE things .
+
+    $default  reduce using rule 45 (out_stmt)
+
+
+state 69
+
+   46 things: thing . delimiter things
+   47       | thing .
+
+    COMMA      shift, and go to state 112
+    SEMICOLON  shift, and go to state 113
+
+    $default  reduce using rule 47 (things)
+
+    delimiter  go to state 114
+
+
+state 70
+
+   21 expr: num_expr .
+   52 thing: num_expr .
+
+    ENDL       reduce using rule 52 (thing)
+    COMMA      reduce using rule 52 (thing)
+    SEMICOLON  reduce using rule 52 (thing)
+    $default   reduce using rule 21 (expr)
+
+
+state 71
+
+   22 expr: rel_expr .
+
+    $default  reduce using rule 22 (expr)
+
+
+state 72
+
+   23 expr: log_expr .
+
+    $default  reduce using rule 23 (expr)
+
+
+state 73
+
+   35 value: STR_LITERAL .
+
+    $default  reduce using rule 35 (value)
+
+
+state 74
+
+   36 value: NUM_LITERAL .
+
+    $default  reduce using rule 36 (value)
+
+
+state 75
+
+   37 value: FLOAT_LITERAL .
+
+    $default  reduce using rule 37 (value)
+
+
+state 76
+
+   32 data_stmt: DATA SPACE values .
+
+    $default  reduce using rule 32 (data_stmt)
+
+
+state 77
+
+   33 values: value . COMMA SPACE values
+   34       | value .
+
+    COMMA  shift, and go to state 115
+
+    $default  reduce using rule 34 (values)
+
+
+state 78
+
+   44 variable_names: var .
+
+    $default  reduce using rule 44 (variable_names)
+
+
+state 79
+
+   42 in_stmt: INPUT SPACE variable_names .
+   43 variable_names: variable_names . COMMA SPACE var
+
+    COMMA  shift, and go to state 116
+
+    $default  reduce using rule 42 (in_stmt)
+
+
+state 80
+
+   38 var_def_stmt: LET SPACE assign_stmt .
+
+    $default  reduce using rule 38 (var_def_stmt)
+
+
+state 81
+
+   67 goto_stmt: GOTO SPACE NUM_LITERAL .
+
+    $default  reduce using rule 67 (goto_stmt)
+
+
+state 82
+
+   65 fun_call_stmt: GOSUB SPACE NUM_LITERAL .
+
+    $default  reduce using rule 65 (fun_call_stmt)
+
+
+state 83
+
+   39 dim_def_stmt: DIM SPACE DIM_VAR .
+
+    $default  reduce using rule 39 (dim_def_stmt)
+
+
+state 84
+
+   26 expr: STR_LITERAL .
+
+    $default  reduce using rule 26 (expr)
+
+
+state 85
+
+   24 expr: NUM_LITERAL .
+
+    $default  reduce using rule 24 (expr)
+
+
+state 86
+
+   25 expr: FLOAT_LITERAL .
+
+    $default  reduce using rule 25 (expr)
+
+
+state 87
+
+   27 expr: var .
+
+    $default  reduce using rule 27 (expr)
+
+
+state 88
+
+   21 expr: num_expr .
+
+    $default  reduce using rule 21 (expr)
+
+
+state 89
+
+   22 expr: rel_expr .
+   69 control_stmt: IF SPACE rel_expr . THEN NUM_LITERAL
+
+    THEN  shift, and go to state 117
+
+    $default  reduce using rule 22 (expr)
+
+
+state 90
+
+   70 iterative_stmt: FOR SPACE assign_stmt . SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE assign_stmt . SPACE TO SPACE num_expr lines SPACE NEXT SPACE var
+
+    SPACE  shift, and go to state 118
+
+
+state 91
+
+   40 fun_def_stmt: DEF SPACE FUN_NAME . eq_stmt num_expr
+   41             | DEF SPACE FUN_NAME . OBRACE var CBRACE eq_stmt num_expr
+
+    OBRACE  shift, and go to state 119
+    EQ_OP   shift, and go to state 57
+    SPACE   shift, and go to state 58
+
+    eq_stmt  go to state 120
+
+
+state 92
+
+   58 eq_stmt: EQ_OP SPACE .
+
+    $default  reduce using rule 58 (eq_stmt)
+
+
+state 93
+
+   56 eq_stmt: SPACE EQ_OP . SPACE
+   57        | SPACE EQ_OP .
+
+    SPACE  shift, and go to state 121
+
+    $default  reduce using rule 57 (eq_stmt)
+
+
+state 94
+
+   26 expr: STR_LITERAL .
+   61 assign_stmt: var eq_stmt STR_LITERAL .
+
+    ENDL      reduce using rule 61 (assign_stmt)
+    SPACE     reduce using rule 61 (assign_stmt)
+    $default  reduce using rule 26 (expr)
+
+
+state 95
+
+   24 expr: NUM_LITERAL .
+   63 assign_stmt: var eq_stmt NUM_LITERAL .
+
+    ENDL      reduce using rule 63 (assign_stmt)
+    SPACE     reduce using rule 63 (assign_stmt)
+    $default  reduce using rule 24 (expr)
+
+
+state 96
+
+   25 expr: FLOAT_LITERAL .
+   64 assign_stmt: var eq_stmt FLOAT_LITERAL .
+
+    ENDL      reduce using rule 64 (assign_stmt)
+    SPACE     reduce using rule 64 (assign_stmt)
+    $default  reduce using rule 25 (expr)
+
+
+state 97
+
+   27 expr: var .
+   62 assign_stmt: var eq_stmt var .
+
+    ENDL      reduce using rule 62 (assign_stmt)
+    SPACE     reduce using rule 62 (assign_stmt)
+    $default  reduce using rule 27 (expr)
+
+
+state 98
+
+   21 expr: num_expr .
+   60 assign_stmt: var eq_stmt num_expr .
+
+    ENDL      reduce using rule 60 (assign_stmt)
+    SPACE     reduce using rule 60 (assign_stmt)
+    $default  reduce using rule 21 (expr)
+
+
+state 99
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   79         | OBRACE expr . CBRACE
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    CBRACE         shift, and go to state 122
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '+'            shift, and go to state 104
+    '-'            shift, and go to state 105
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    rel_op  go to state 111
+
+
+state 100
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   78         | '-' expr .
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 78 (num_expr)]
+    RELATIONAL_OP  [reduce using rule 78 (num_expr)]
+    EQ_OP          [reduce using rule 78 (num_expr)]
+    '<'            [reduce using rule 78 (num_expr)]
+    '>'            [reduce using rule 78 (num_expr)]
+    $default       reduce using rule 78 (num_expr)
+
+    rel_op  go to state 111
+
+
+state 101
+
+   85 log_expr: expr LOGICAL_OP . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 123
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 102
+
+   81 rel_op: RELATIONAL_OP .
+
+    $default  reduce using rule 81 (rel_op)
+
+
+state 103
+
+   84 rel_op: EQ_OP .
+
+    $default  reduce using rule 84 (rel_op)
+
+
+state 104
+
+   73 num_expr: expr '+' . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 124
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 105
+
+   74 num_expr: expr '-' . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 125
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 106
+
+   75 num_expr: expr '*' . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 126
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 107
+
+   76 num_expr: expr '/' . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 127
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 108
+
+   77 num_expr: expr '^' . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 128
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 109
+
+   82 rel_op: '<' .
+
+    $default  reduce using rule 82 (rel_op)
+
+
+state 110
+
+   83 rel_op: '>' .
+
+    $default  reduce using rule 83 (rel_op)
+
+
+state 111
+
+   80 rel_expr: expr rel_op . expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 129
+    var       go to state 87
+    num_expr  go to state 88
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 112
+
+   49 delimiter: COMMA .
+
+    $default  reduce using rule 49 (delimiter)
+
+
+state 113
+
+   50 delimiter: SEMICOLON .
+
+    $default  reduce using rule 50 (delimiter)
+
+
+state 114
+
+   46 things: thing delimiter . things
+
+    STR_LITERAL    shift, and go to state 61
+    NUM_LITERAL    shift, and go to state 62
+    FLOAT_LITERAL  shift, and go to state 63
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    $default  reduce using rule 48 (things)
+
+    expr      go to state 66
+    var       go to state 67
+    things    go to state 130
+    thing     go to state 69
+    num_expr  go to state 70
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 115
+
+   33 values: value COMMA . SPACE values
+
+    SPACE  shift, and go to state 131
+
+
+state 116
+
+   43 variable_names: variable_names COMMA . SPACE var
+
+    SPACE  shift, and go to state 132
+
+
+state 117
+
+   69 control_stmt: IF SPACE rel_expr THEN . NUM_LITERAL
+
+    NUM_LITERAL  shift, and go to state 133
+
+
+state 118
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE . TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE assign_stmt SPACE . TO SPACE num_expr lines SPACE NEXT SPACE var
+
+    TO  shift, and go to state 134
+
+
+state 119
+
+   41 fun_def_stmt: DEF SPACE FUN_NAME OBRACE . var CBRACE eq_stmt num_expr
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+
+    var  go to state 135
+
+
+state 120
+
+   40 fun_def_stmt: DEF SPACE FUN_NAME eq_stmt . num_expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 66
+    var       go to state 87
+    num_expr  go to state 136
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 121
+
+   56 eq_stmt: SPACE EQ_OP SPACE .
+
+    $default  reduce using rule 56 (eq_stmt)
+
+
+state 122
+
+   79 num_expr: OBRACE expr CBRACE .
+
+    $default  reduce using rule 79 (num_expr)
+
+
+state 123
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+   85         | expr LOGICAL_OP expr .
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '+'            shift, and go to state 104
+    '-'            shift, and go to state 105
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 85 (log_expr)]
+    RELATIONAL_OP  [reduce using rule 85 (log_expr)]
+    EQ_OP          [reduce using rule 85 (log_expr)]
+    '+'            [reduce using rule 85 (log_expr)]
+    '-'            [reduce using rule 85 (log_expr)]
+    '*'            [reduce using rule 85 (log_expr)]
+    '/'            [reduce using rule 85 (log_expr)]
+    '^'            [reduce using rule 85 (log_expr)]
+    '<'            [reduce using rule 85 (log_expr)]
+    '>'            [reduce using rule 85 (log_expr)]
+    $default       reduce using rule 85 (log_expr)
+
+    rel_op  go to state 111
+
+
+state 124
+
+   73 num_expr: expr . '+' expr
+   73         | expr '+' expr .
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 73 (num_expr)]
+    RELATIONAL_OP  [reduce using rule 73 (num_expr)]
+    EQ_OP          [reduce using rule 73 (num_expr)]
+    '<'            [reduce using rule 73 (num_expr)]
+    '>'            [reduce using rule 73 (num_expr)]
+    $default       reduce using rule 73 (num_expr)
+
+    rel_op  go to state 111
+
+
+state 125
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   74         | expr '-' expr .
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 74 (num_expr)]
+    RELATIONAL_OP  [reduce using rule 74 (num_expr)]
+    EQ_OP          [reduce using rule 74 (num_expr)]
+    '<'            [reduce using rule 74 (num_expr)]
+    '>'            [reduce using rule 74 (num_expr)]
+    $default       reduce using rule 74 (num_expr)
+
+    rel_op  go to state 111
+
+
+state 126
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   75         | expr '*' expr .
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 75 (num_expr)]
+    RELATIONAL_OP  [reduce using rule 75 (num_expr)]
+    EQ_OP          [reduce using rule 75 (num_expr)]
+    '<'            [reduce using rule 75 (num_expr)]
+    '>'            [reduce using rule 75 (num_expr)]
+    $default       reduce using rule 75 (num_expr)
+
+    rel_op  go to state 111
+
+
+state 127
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   76         | expr '/' expr .
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 76 (num_expr)]
+    RELATIONAL_OP  [reduce using rule 76 (num_expr)]
+    EQ_OP          [reduce using rule 76 (num_expr)]
+    '<'            [reduce using rule 76 (num_expr)]
+    '>'            [reduce using rule 76 (num_expr)]
+    $default       reduce using rule 76 (num_expr)
+
+    rel_op  go to state 111
+
+
+state 128
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   77         | expr '^' expr .
+   80 rel_expr: expr . rel_op expr
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 77 (num_expr)]
+    RELATIONAL_OP  [reduce using rule 77 (num_expr)]
+    EQ_OP          [reduce using rule 77 (num_expr)]
+    '<'            [reduce using rule 77 (num_expr)]
+    '>'            [reduce using rule 77 (num_expr)]
+    $default       reduce using rule 77 (num_expr)
+
+    rel_op  go to state 111
+
+
+state 129
+
+   73 num_expr: expr . '+' expr
+   74         | expr . '-' expr
+   75         | expr . '*' expr
+   76         | expr . '/' expr
+   77         | expr . '^' expr
+   80 rel_expr: expr . rel_op expr
+   80         | expr rel_op expr .
+   85 log_expr: expr . LOGICAL_OP expr
+
+    LOGICAL_OP     shift, and go to state 101
+    RELATIONAL_OP  shift, and go to state 102
+    EQ_OP          shift, and go to state 103
+    '+'            shift, and go to state 104
+    '-'            shift, and go to state 105
+    '*'            shift, and go to state 106
+    '/'            shift, and go to state 107
+    '^'            shift, and go to state 108
+    '<'            shift, and go to state 109
+    '>'            shift, and go to state 110
+
+    LOGICAL_OP     [reduce using rule 80 (rel_expr)]
+    RELATIONAL_OP  [reduce using rule 80 (rel_expr)]
+    EQ_OP          [reduce using rule 80 (rel_expr)]
+    '+'            [reduce using rule 80 (rel_expr)]
+    '-'            [reduce using rule 80 (rel_expr)]
+    '*'            [reduce using rule 80 (rel_expr)]
+    '/'            [reduce using rule 80 (rel_expr)]
+    '^'            [reduce using rule 80 (rel_expr)]
+    '<'            [reduce using rule 80 (rel_expr)]
+    '>'            [reduce using rule 80 (rel_expr)]
+    $default       reduce using rule 80 (rel_expr)
+
+    rel_op  go to state 111
+
+
+state 130
+
+   46 things: thing delimiter things .
+
+    $default  reduce using rule 46 (things)
+
+
+state 131
+
+   33 values: value COMMA SPACE . values
+
+    STR_LITERAL    shift, and go to state 73
+    NUM_LITERAL    shift, and go to state 74
+    FLOAT_LITERAL  shift, and go to state 75
+
+    values  go to state 137
+    value   go to state 77
+
+
+state 132
+
+   43 variable_names: variable_names COMMA SPACE . var
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+
+    var  go to state 138
+
+
+state 133
+
+   69 control_stmt: IF SPACE rel_expr THEN NUM_LITERAL .
+
+    $default  reduce using rule 69 (control_stmt)
+
+
+state 134
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO . SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE assign_stmt SPACE TO . SPACE num_expr lines SPACE NEXT SPACE var
+
+    SPACE  shift, and go to state 139
+
+
+state 135
+
+   41 fun_def_stmt: DEF SPACE FUN_NAME OBRACE var . CBRACE eq_stmt num_expr
+
+    CBRACE  shift, and go to state 140
+
+
+state 136
+
+   21 expr: num_expr .
+   40 fun_def_stmt: DEF SPACE FUN_NAME eq_stmt num_expr .
+
+    ENDL      reduce using rule 40 (fun_def_stmt)
+    $default  reduce using rule 21 (expr)
+
+
+state 137
+
+   33 values: value COMMA SPACE values .
+
+    $default  reduce using rule 33 (values)
+
+
+state 138
+
+   43 variable_names: variable_names COMMA SPACE var .
+
+    $default  reduce using rule 43 (variable_names)
+
+
+state 139
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE . num_expr SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE assign_stmt SPACE TO SPACE . num_expr lines SPACE NEXT SPACE var
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 66
+    var       go to state 87
+    num_expr  go to state 141
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 140
+
+   41 fun_def_stmt: DEF SPACE FUN_NAME OBRACE var CBRACE . eq_stmt num_expr
+
+    EQ_OP  shift, and go to state 57
+    SPACE  shift, and go to state 58
+
+    eq_stmt  go to state 142
+
+
+state 141
+
+   21 expr: num_expr .
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr . SPACE STEP SPACE num_expr ENDL lines SPACE
+   71               | FOR SPACE assign_stmt SPACE TO SPACE num_expr . lines SPACE NEXT SPACE var
+
+    LINE_NO  shift, and go to state 1
+    SPACE    shift, and go to state 143
+
+    $default  reduce using rule 21 (expr)
+
+    lines  go to state 144
+    line   go to state 4
+
+
+state 142
+
+   41 fun_def_stmt: DEF SPACE FUN_NAME OBRACE var CBRACE eq_stmt . num_expr
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 66
+    var       go to state 87
+    num_expr  go to state 145
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 143
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE . STEP SPACE num_expr ENDL lines SPACE
+
+    STEP  shift, and go to state 146
+
+
+state 144
+
+   71 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr lines . SPACE NEXT SPACE var
+
+    SPACE  shift, and go to state 147
+
+
+state 145
+
+   21 expr: num_expr .
+   41 fun_def_stmt: DEF SPACE FUN_NAME OBRACE var CBRACE eq_stmt num_expr .
+
+    ENDL      reduce using rule 41 (fun_def_stmt)
+    $default  reduce using rule 21 (expr)
+
+
+state 146
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP . SPACE num_expr ENDL lines SPACE
+
+    SPACE  shift, and go to state 148
+
+
+state 147
+
+   71 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr lines SPACE . NEXT SPACE var
+
+    NEXT  shift, and go to state 149
+
+
+state 148
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE . num_expr ENDL lines SPACE
+
+    STR_LITERAL    shift, and go to state 84
+    NUM_LITERAL    shift, and go to state 85
+    FLOAT_LITERAL  shift, and go to state 86
+    DIM_VAR        shift, and go to state 10
+    OBRACE         shift, and go to state 64
+    VAR_NAME       shift, and go to state 11
+    '-'            shift, and go to state 65
+
+    expr      go to state 66
+    var       go to state 87
+    num_expr  go to state 150
+    rel_expr  go to state 71
+    log_expr  go to state 72
+
+
+state 149
+
+   71 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr lines SPACE NEXT . SPACE var
+
+    SPACE  shift, and go to state 151
+
+
+state 150
+
+   21 expr: num_expr .
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr . ENDL lines SPACE
+
+    ENDL  shift, and go to state 152
+
+    $default  reduce using rule 21 (expr)
+
+
+state 151
+
+   71 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr lines SPACE NEXT SPACE . var
+
+    DIM_VAR   shift, and go to state 10
+    VAR_NAME  shift, and go to state 11
+
+    var  go to state 153
+
+
+state 152
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL . lines SPACE
+
+    LINE_NO  shift, and go to state 1
+
+    lines  go to state 154
+    line   go to state 4
+
+
+state 153
+
+   71 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr lines SPACE NEXT SPACE var .
+
+    $default  reduce using rule 71 (iterative_stmt)
+
+
+state 154
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines . SPACE
+
+    SPACE  shift, and go to state 155
+
+
+state 155
+
+   70 iterative_stmt: FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL lines SPACE .
+
+    $default  reduce using rule 70 (iterative_stmt)
