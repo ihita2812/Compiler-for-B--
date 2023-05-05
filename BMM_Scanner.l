@@ -20,7 +20,7 @@ int SymToType(char* str);
 ^[0-9]*                         {yylval=atoi(yytext); return LINE_NO;}
 [0-9]*                          {yylval = atoi(yytext); return NUM_LITERAL;}
 [0-9]*\.[0-9]*                     {yylval = atoi(yytext); return FLOAT_LITERAL;}
-\"[-+*/_A-Z?%$!@`]+\" {return STR_LITERAL;}
+\"[^a-z\n]+\"              {return STR_LITERAL;}
 [A-Z][0-9]?\([0-9]+(,[0-9]+)?\)    {yylval = VarIndex(yytext);return DIM_VAR;}
 [A-Z][0-9]?                  {printf("%s\n", yytext);yylval = VarIndex(yytext);return VAR_NAME;}
 [$#!%]                       {yylval = SymToType(yytext);return TYPE;}

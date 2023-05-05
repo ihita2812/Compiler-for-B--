@@ -22,7 +22,7 @@ FILE *yyin;
 ^[0-9][0-9]*                         {printf("  LINE_NO");}
 [0-9]*                          {printf("  NUM_LITERAL");}
 [0-9]*\.[0-9]*                     {printf("  FLOAT_LITERAL");}
-\"[-+*/_A-Z?%$!@`]+\" {printf ("  STR_LITERAL");}
+\"[^a-z\n]+\" {printf ("  STR_LITERAL");}
 [A-Z][0-9]?\([0-9]+(,[0-9]+)?\)    {printf("  DIM_VAR");}
 [A-Z][0-9]?                  {printf("  VAR_NAME");}
 [$#!%]                       {printf("  TYPE");}

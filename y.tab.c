@@ -534,14 +534,14 @@ static const yytype_uint16 yyrline[] =
        0,    33,    33,    40,    45,    46,    49,    57,    66,    67,
       68,    69,    70,    71,    72,    73,    74,    75,    76,    77,
       78,    79,    80,    83,    84,    85,    86,    87,    88,    89,
-      92,   100,   108,   113,   124,   124,   128,   129,   132,   133,
-     134,   139,   139,   150,   150,   161,   161,   166,   166,   175,
-     175,   181,   182,   187,   187,   194,   195,   196,   199,   200,
-     203,   204,   205,   206,   207,   214,   214,   216,   217,   220,
-     220,   232,   232,   243,   243,   254,   254,   282,   282,   297,
-     297,   305,   305,   318,   318,   326,   326,   335,   335,   344,
-     344,   349,   349,   356,   366,   367,   368,   369,   370,   371,
-     372,   375,   377,   378,   379,   380,   383
+      92,   102,   110,   115,   126,   126,   130,   131,   134,   135,
+     136,   141,   141,   152,   152,   163,   163,   168,   168,   177,
+     177,   183,   184,   189,   189,   196,   197,   198,   201,   202,
+     205,   206,   207,   208,   209,   216,   216,   218,   219,   222,
+     222,   236,   236,   247,   247,   258,   258,   286,   286,   301,
+     301,   309,   309,   322,   322,   330,   330,   339,   339,   348,
+     348,   353,   353,   360,   370,   371,   372,   373,   374,   375,
+     376,   379,   381,   382,   383,   384,   387
 };
 #endif
 
@@ -1630,7 +1630,9 @@ yyreduce:
     {
                 printf("%d : %d\n", (yyvsp[(1) - (2)]),(yyvsp[(2) - (2)]));
                 (yyval) = (yyvsp[(1) - (2)]);
+                printf("varbefore typeset %d\n", (yyval));
                 TypeSet((yyval), (yyvsp[(2) - (2)]));
+                printf("varafter typeset %d\n", (yyval));
                 printf("%d is type ",VarStatus[(yyvsp[(1) - (2)])]);
                 {printf("wazoo\n");}
         }
@@ -1639,7 +1641,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 101 "BMM_Parser.y"
+#line 103 "BMM_Parser.y"
     {       
                 (yyval) = (yyvsp[(1) - (1)]);
                 TypeSet((yyval), '%');
@@ -1650,7 +1652,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 109 "BMM_Parser.y"
+#line 111 "BMM_Parser.y"
     {
                 (yyval)=(yyvsp[(1) - (1)]);
         }
@@ -1659,7 +1661,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 113 "BMM_Parser.y"
+#line 115 "BMM_Parser.y"
     {
                 (yyval)='%'; {printf("erased\n");}
         }
@@ -1668,14 +1670,14 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 124 "BMM_Parser.y"
+#line 126 "BMM_Parser.y"
     { CurrentState = 2; }
     break;
 
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 139 "BMM_Parser.y"
+#line 141 "BMM_Parser.y"
     {
                 printf("hello i let'd\n");
                 CurrentState = 4;
@@ -1685,14 +1687,14 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 144 "BMM_Parser.y"
+#line 146 "BMM_Parser.y"
     {printf("hello i let'd\n");}
     break;
 
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 150 "BMM_Parser.y"
+#line 152 "BMM_Parser.y"
     {
                 CurrentState=23;
         }
@@ -1701,7 +1703,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 154 "BMM_Parser.y"
+#line 156 "BMM_Parser.y"
     {
                 TypeSet((yyvsp[(3) - (5)]), '%');
         }
@@ -1710,7 +1712,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 161 "BMM_Parser.y"
+#line 163 "BMM_Parser.y"
     {
                 CurrentState = 3;
                 
@@ -1720,7 +1722,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 166 "BMM_Parser.y"
+#line 168 "BMM_Parser.y"
     {
                 CurrentState = 3;
         }
@@ -1729,7 +1731,7 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 175 "BMM_Parser.y"
+#line 177 "BMM_Parser.y"
     {
                 CurrentState = 11;
         }
@@ -1738,7 +1740,7 @@ yyreduce:
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 187 "BMM_Parser.y"
+#line 189 "BMM_Parser.y"
     {
                 CurrentState = 12;
         }
@@ -1747,21 +1749,21 @@ yyreduce:
   case 65:
 
 /* Line 1455 of yacc.c  */
-#line 214 "BMM_Parser.y"
+#line 216 "BMM_Parser.y"
     {printf("wow\n");}
     break;
 
   case 66:
 
 /* Line 1455 of yacc.c  */
-#line 214 "BMM_Parser.y"
+#line 216 "BMM_Parser.y"
     {printf("collpasinf eq tmt\n");}
     break;
 
   case 69:
 
 /* Line 1455 of yacc.c  */
-#line 220 "BMM_Parser.y"
+#line 222 "BMM_Parser.y"
     {
                 printf("assignning atm 5\n");
                 CurrentState=20;
@@ -1771,20 +1773,22 @@ yyreduce:
   case 70:
 
 /* Line 1455 of yacc.c  */
-#line 225 "BMM_Parser.y"
+#line 227 "BMM_Parser.y"
     {
                 printf("hello\n");
-                if (TypeCheck((yyvsp[(1) - (4)]), 2))
+                printf("dollar1: %d",(yyvsp[(1) - (4)]));
+                if (TypeCheck((yyvsp[(2) - (4)]), 2))
                 {
                         yyerror("Error");
                 } //int
+                printf("hello\n");
         }
     break;
 
   case 71:
 
 /* Line 1455 of yacc.c  */
-#line 232 "BMM_Parser.y"
+#line 236 "BMM_Parser.y"
     {
                 printf("assignning atm 1\n");
                 CurrentState=9;
@@ -1794,7 +1798,7 @@ yyreduce:
   case 72:
 
 /* Line 1455 of yacc.c  */
-#line 237 "BMM_Parser.y"
+#line 241 "BMM_Parser.y"
     {
                 if (TypeCheck((yyvsp[(1) - (4)]), 2))
                 {
@@ -1806,7 +1810,7 @@ yyreduce:
   case 73:
 
 /* Line 1455 of yacc.c  */
-#line 243 "BMM_Parser.y"
+#line 247 "BMM_Parser.y"
     {
                 printf("assignning atm 2\n");
                 CurrentState=10;
@@ -1816,7 +1820,7 @@ yyreduce:
   case 74:
 
 /* Line 1455 of yacc.c  */
-#line 248 "BMM_Parser.y"
+#line 252 "BMM_Parser.y"
     {       
                 if (TypeCheck((yyvsp[(1) - (4)]), 1))
                 {
@@ -1828,7 +1832,7 @@ yyreduce:
   case 75:
 
 /* Line 1455 of yacc.c  */
-#line 254 "BMM_Parser.y"
+#line 258 "BMM_Parser.y"
     {
                 printf("assignning atm 3\n");
                 CurrentState=12;
@@ -1838,7 +1842,7 @@ yyreduce:
   case 76:
 
 /* Line 1455 of yacc.c  */
-#line 259 "BMM_Parser.y"
+#line 263 "BMM_Parser.y"
     {
                 if (VarStatus[(yyvsp[(3) - (4)])]==0)
                 {
@@ -1867,7 +1871,7 @@ yyreduce:
   case 77:
 
 /* Line 1455 of yacc.c  */
-#line 282 "BMM_Parser.y"
+#line 286 "BMM_Parser.y"
     {
                 printf("assignning atm 6\n");
                 CurrentState=20;
@@ -1877,7 +1881,7 @@ yyreduce:
   case 78:
 
 /* Line 1455 of yacc.c  */
-#line 287 "BMM_Parser.y"
+#line 291 "BMM_Parser.y"
     {
                 if (TypeCheck((yyvsp[(1) - (4)]), 2) || TypeCheck((yyvsp[(1) - (4)]), 3) || TypeCheck((yyvsp[(1) - (4)]), 4))
                 {
@@ -1889,7 +1893,7 @@ yyreduce:
   case 79:
 
 /* Line 1455 of yacc.c  */
-#line 297 "BMM_Parser.y"
+#line 301 "BMM_Parser.y"
     {
                 CurrentState=13;
                 GoSub = 1;
@@ -1899,7 +1903,7 @@ yyreduce:
   case 81:
 
 /* Line 1455 of yacc.c  */
-#line 305 "BMM_Parser.y"
+#line 309 "BMM_Parser.y"
     {
                 if (GoSub != 1)
                 {       
@@ -1913,7 +1917,7 @@ yyreduce:
   case 83:
 
 /* Line 1455 of yacc.c  */
-#line 318 "BMM_Parser.y"
+#line 322 "BMM_Parser.y"
     {
                 CurrentState=14;
         }
@@ -1922,7 +1926,7 @@ yyreduce:
   case 85:
 
 /* Line 1455 of yacc.c  */
-#line 326 "BMM_Parser.y"
+#line 330 "BMM_Parser.y"
     {
                 CurrentState=16;
         }
@@ -1931,7 +1935,7 @@ yyreduce:
   case 87:
 
 /* Line 1455 of yacc.c  */
-#line 335 "BMM_Parser.y"
+#line 339 "BMM_Parser.y"
     {
                 CurrentState=17;
         }
@@ -1940,7 +1944,7 @@ yyreduce:
   case 89:
 
 /* Line 1455 of yacc.c  */
-#line 344 "BMM_Parser.y"
+#line 348 "BMM_Parser.y"
     {
                 CurrentState=18;
         }
@@ -1949,7 +1953,7 @@ yyreduce:
   case 91:
 
 /* Line 1455 of yacc.c  */
-#line 349 "BMM_Parser.y"
+#line 353 "BMM_Parser.y"
     {
                 CurrentState=19;
         }
@@ -1958,7 +1962,7 @@ yyreduce:
   case 93:
 
 /* Line 1455 of yacc.c  */
-#line 357 "BMM_Parser.y"
+#line 361 "BMM_Parser.y"
     {
                 
         }
@@ -1967,7 +1971,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1971 "y.tab.c"
+#line 1975 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2179,7 +2183,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 385 "BMM_Parser.y"
+#line 389 "BMM_Parser.y"
 
 
 
@@ -2208,6 +2212,7 @@ int TypeCheck(int ind, int type)
         }
         else return 1; */
 
+        printf("%d : %d\n", VarStatus[ind], type);
         if (VarStatus[ind]==0) {return 1;}
         if ((VarStatus[ind]==1) && (type!=1)) {return 1;}
         else return 0;

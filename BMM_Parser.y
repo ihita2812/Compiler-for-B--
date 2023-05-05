@@ -93,7 +93,9 @@ var
         {
                 printf("%d : %d\n", $1,$2);
                 $$ = $1;
+                printf("varbefore typeset %d\n", $$);
                 TypeSet($$, $2);
+                printf("varafter typeset %d\n", $$);
                 printf("%d is type ",VarStatus[$1]);
                 {printf("wazoo\n");}
         }
@@ -224,10 +226,12 @@ assign_stmt
         var eq_stmt NUM_LITERAL
         {
                 printf("hello\n");
-                if (TypeCheck($1, 2))
+                printf("dollar1: %d",$1);
+                if (TypeCheck($2, 2))
                 {
                         yyerror("Error");
                 } //int
+                printf("hello\n");
         }
         |{
                 printf("assignning atm 1\n");
@@ -410,6 +414,7 @@ int TypeCheck(int ind, int type)
         }
         else return 1; */
 
+        printf("%d : %d\n", VarStatus[ind], type);
         if (VarStatus[ind]==0) {return 1;}
         if ((VarStatus[ind]==1) && (type!=1)) {return 1;}
         else return 0;
