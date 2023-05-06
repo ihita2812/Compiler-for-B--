@@ -1,23 +1,16 @@
-===================
-# Compiler-for-BMM
-===================
-BMM (or B--) is a toy programming language based on BASIC.
+
+# Compiler-for-BMM README
+
+BMM (or B--) is a toy programming language based on BASIC.<br />
 This is complete scanner and parser for BMM.
 
-======
-README
-======
+## CREATORS
 
------------
-# CREATORS
------------
 
-Ihita Sinha, 2021CSB1095
+Ihita Sinha, 2021CSB1095<br />
 Niti Shyamsukha, 2021CSB1118
 
------------
-# CONTENTS
------------
+## CONTENTS
 
 1. BMM_Scanner.l : Scanner for BMM using flex
 2. BMM_Parser.y : Parser for BMM using bison
@@ -25,31 +18,25 @@ Niti Shyamsukha, 2021CSB1118
 4. IncorrectSample.bmm : Incorrect sample code writen in BMM
 5. README
 
----------------
-# HOW TO BUILD
----------------
+## HOW TO BUILD
 
-To build the compiler for BMM, run the following commands:
-$ lex BMM_Scanner.l
-$ bison -d BMM_Parser.y
-$ gcc lex.yy.c y.tab.c -o bb
+To build the compiler for BMM, run the following commands:<br />
+$ lex BMM_Scanner.l<br />
+$ bison -d BMM_Parser.y<br />
+$ gcc lex.yy.c y.tab.c -o bb<br />
 
----------------
-# HOW TO RUN
----------------
+## HOW TO RUN
 
-To run the compiler for BMM, run the following commands:
-$ bb test_file.bmm
+To run the compiler for BMM, run the following commands:<br />
+$ bb test_file.bmm<br />
 Here, the test file can be any of the two provided in this directory. (CorrectSample.bmm and IncorrectSample.bmm)
 
--------------------
-# SUPPORTED ERRORS
--------------------
+## SUPPORTED ERRORS
 
-Errors are shown in the format:
-"Error in LINE <number> : <error>"
+Errors are shown in the format:<br />
+"Error in LINE <number> : <error>"<br />
 
-Here, <error> is one of the following:
+Here, <error> is one of the following:<br />
 
 1. Lowercase values not permitted
 2. DATA Statement must be in the form. DATA value1, value2, ..., valueN
