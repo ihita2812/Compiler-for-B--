@@ -19,9 +19,9 @@
 %token LINE_NO STR_LITERAL LOGICAL_OP NUM_LITERAL FLOAT_LITERAL DIM_VAR OBRACE CBRACE VAR_NAME FUN_NAME ENDL RELATIONAL_OP
 %token PRINT DATA INPUT LET GOTO GOSUB REM DIM IF THEN FOR TO STEP NEXT RETURN STOP END DEF TYPE
 %token EQ_OP SPACE COMMA SEMICOLON
-%left '+' '-'
-%left '*' '/'
-%right '^'
+%left ADD_OP SUB_OP
+%left MUL_OP DIV_OP
+%right POW_OP
 
 %%
 
@@ -33,14 +33,14 @@ program
         :lines 
         {
                 CurrentState = 6;
-                printf("identified program\n");
+                printf("Collapsing program\n");
         }
 
 lines
         :line lines
         {
                 CurrentState = 7;
-                printf("identified lines\n");
+                printf("Collapsing lines\n");
         }
         |line
         |end_line
@@ -50,7 +50,7 @@ end_line
         {
                 CurrentState = 5;
                 LineNumber = $1;
-                printf("identified endline\n");
+                printf("Collapsing endline\n");
         }
 
 line
@@ -58,8 +58,7 @@ line
         {
                 LineNumber = $1;
                 CurrentState = 8;
-                printf("%d\n",$1);
-                printf("identified line\n");
+                printf("Collapsing line\n");
         }
 
 stmt
@@ -91,19 +90,13 @@ expr
 var
         :VAR_NAME var2
         {
-                printf("%d : %d\n", $1,$2);
                 $$ = $1;
-                printf("varbefore typeset %d\n", $$);
                 TypeSet($$, $2);
-                printf("varafter typeset %d\n", $$);
-                printf("%d is type ",VarStatus[$1]);
-                {printf("wazoo\n");}
         }
         |DIM_VAR
         {       
                 $$ = $1;
                 TypeSet($$, '%');
-                {printf("wazoo2\n");}
         }
 
 var2
@@ -113,7 +106,7 @@ var2
         }
         |
         {
-                $$='%'; {printf("erased\n");}
+                $$='%';
         }
 
 /*----------------------------------------*/
@@ -127,7 +120,7 @@ data_stmt
         DATA SPACE values ENDL
 
 values
-        :value COMMA SPACE values 
+        :value COMMA values 
         |value
 
 value
@@ -139,12 +132,9 @@ value
 
 var_def_stmt
         :{
-                printf("hello i let'd\n");
                 CurrentState = 4;
         }
         LET SPACE assign_stmt ENDL
-        {printf("hello i let'd\n");}
-        
 
 /*----------dim_def_stmt----------*/
 
@@ -213,86 +203,77 @@ thing
 
 
 eq_stmt
-        :{printf("wow\n");}space_eqs EQ_OP space_eqs {printf("collpasinf eq tmt\n");}
+        :space_eqs EQ_OP space_eqs
 space_eqs
         :SPACE
         |
 
 assign_stmt
         :{
-                printf("assignning atm 5\n");
                 CurrentState=20;
         }
         var eq_stmt NUM_LITERAL
         {
-                printf("hello\n");
-                printf("dollar1: %d",$1);
                 if (TypeCheck($2, 2))
                 {
                         yyerror("Error");
                 } //int
-                printf("hello\n");
         }
         |{
-                printf("assignning atm 1\n");
-                CurrentState=9;
+                CurrentState=20;
         }
-        var eq_stmt num_expr
+        var eq_stmt FLOAT_LITERAL
         {
-                if (TypeCheck($1, 2))
+                if (TypeCheck($2, 2))
                 {
                         yyerror("Error");
-                } //int
+                } //float
         }
         |{
-                printf("assignning atm 2\n");
                 CurrentState=10;
         }
         var eq_stmt STR_LITERAL
         {       
-                if (TypeCheck($1, 1))
+                if (TypeCheck($2, 1))
                 {
                         yyerror("Error");
                 } //string
         }
         |{
-                printf("assignning atm 3\n");
+                CurrentState=9;
+        }
+        var eq_stmt num_expr
+        {
+                if (TypeCheck($2, 2))
+                {
+                        yyerror("Error");
+                } //int
+        }
+        |{
                 CurrentState=12;
         }
         var eq_stmt var 
         {
-                if (VarStatus[$3]==0)
+                if (VarStatus[$4]==0)
                 {
                         yyerror("Error");
                 } //invalid variable assigned
-                else if (VarStatus[$3]==VarStatus[$1])
+                else if (VarStatus[$4]==VarStatus[$2])
                 {
                         //no error
                 }
-                else if ((VarStatus[$3]==2) || (VarStatus[$3]==3) || (VarStatus[$3]==4) )
+                else if ((VarStatus[$4]==2) || (VarStatus[$4]==3) || (VarStatus[$4]==4) )
                 {       
-                        if ((VarStatus[$1]==2) || (VarStatus[$1]==3) || (VarStatus[$1]==4))
+                        if ((VarStatus[$2]==2) || (VarStatus[$2]==3) || (VarStatus[$2]==4))
                         {
                                 //no error.
                         }
                         else
                         {
-                                printf("assignning atm 4\n");
                                 CurrentState = 22;
                                 yyerror("Error");
                         }
                 } //invalid variable assigned
-        }
-        |{
-                printf("assignning atm 6\n");
-                CurrentState=20;
-        }
-        var eq_stmt FLOAT_LITERAL
-        {
-                if (TypeCheck($1, 2) || TypeCheck($1, 3) || TypeCheck($1, 4))
-                {
-                        yyerror("Error");
-                } //float
         }
 
 /*----------fun_call_stmt----------*/
@@ -339,27 +320,25 @@ control_stmt
         :{
                 CurrentState=17;
         }
-        IF SPACE rel_expr THEN NUM_LITERAL ENDL
+        IF SPACE rel_expr SPACE THEN SPACE NUM_LITERAL ENDL
         
 
 /*----------iterative_stmt----------*/
+
+it1
+        :SPACE STEP SPACE num_expr ENDL
+        |ENDL
 
 iterative_stmt
         :{
                 CurrentState=18;
         }
-        FOR SPACE assign_stmt SPACE TO SPACE num_expr SPACE STEP SPACE num_expr ENDL
+        FOR SPACE assign_stmt SPACE TO SPACE num_expr it1
         
-        |{
-                CurrentState=19;
-        }
-        FOR SPACE assign_stmt SPACE TO SPACE num_expr ENDL
-        
-
 next_stmt
-        :NEXT VAR_NAME ENDL
+        :NEXT SPACE VAR_NAME ENDL
         {
-                
+           
         }
 
 /*---------------------------------------*/
@@ -367,20 +346,21 @@ next_stmt
 /*---------------------------------------*/
 
 num_expr
-        :expr '+' expr
-        |expr '-' expr
-        |expr '*' expr
-        |expr '/' expr
-        |expr '^' expr
-        |'-' expr
-        |OBRACE expr CBRACE
+        :OBRACE expr CBRACE
+        |expr num_op expr
+        |SUB_OP expr
+
+num_op
+        :ADD_OP
+        |SUB_OP
+        |MUL_OP
+        |DIV_OP
+        |POW_OP
 
 rel_expr
         :expr rel_op expr
 rel_op
         :RELATIONAL_OP
-        |'<'
-        |'>'
         |EQ_OP
 
 log_expr
@@ -414,9 +394,13 @@ int TypeCheck(int ind, int type)
         }
         else return 1; */
 
-        printf("%d : %d\n", VarStatus[ind], type);
-        if (VarStatus[ind]==0) {return 1;}
-        if ((VarStatus[ind]==1) && (type!=1)) {return 1;}
+        if (type==36) {type=1;}
+        if (type==37) {type=2;}
+        if (type==33) {type=3;}
+        if (type==35) {type=4;}
+
+        if (VarStatus[ind]==0) return 1;
+        if ((VarStatus[ind]==1) && (type!=1)) return 1;
         else return 0;
         
 }

@@ -10,6 +10,8 @@ int LineNumber;
 int VarIndex(char *str);
 int SymToType(char* str);
 %}
+var_name        [A-Z][0-9]?
+digit           [0-9]
 
 %%
 
@@ -21,15 +23,21 @@ int SymToType(char* str);
 [0-9]*                          {yylval = atoi(yytext); return NUM_LITERAL;}
 [0-9]*\.[0-9]*                     {yylval = atoi(yytext); return FLOAT_LITERAL;}
 \"[^a-z\n]+\"              {return STR_LITERAL;}
-[A-Z][0-9]?\([0-9]+(,[0-9]+)?\)    {yylval = VarIndex(yytext);return DIM_VAR;}
+[A-Z][0-9]?\(({var_name}|{digit}+)(,({var_name}|{digit}+))?\)    {yylval = VarIndex(yytext);return DIM_VAR;}
 [A-Z][0-9]?                  {printf("%s\n", yytext);yylval = VarIndex(yytext);return VAR_NAME;}
 [$#!%]                       {yylval = SymToType(yytext);return TYPE;}
 FN[A-Z]                      {return FUN_NAME;}                         
 "\n"                         {return ENDL;}
 "("                          {return OBRACE;}
 ")"                          {return CBRACE;}
-[-+*/^<>]                    {return *yytext;}
+"-"                             {return SUB_OP;}
+"+"                             {return ADD_OP;}
+"*"                             {return MUL_OP;}
+"/"                             {return DIV_OP;}
+"^"                             {return POW_OP;}
 "="                            {return EQ_OP;}
+"<"                             {return RELATIONAL_OP;}
+">"                             {return RELATIONAL_OP;}
 "<>"                         {return RELATIONAL_OP;}
 "<="                         {return RELATIONAL_OP;}
 ">="                         {return RELATIONAL_OP;}
@@ -64,13 +72,11 @@ int VarIndex(char *str)
 {
         int index=0;
         int len = strlen(str);
-        printf("%d is length of N\n",len);
         if (len==1) {
                 index = (int) str[0]-'A';
         } else {
                 index = 26*str[1] + 26 + str[0]-'A';
         }
-        printf("%d is index\n",index);
         return index;
 }
 

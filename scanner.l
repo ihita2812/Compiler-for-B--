@@ -4,74 +4,82 @@
 #include "y.tab.h"
 int CurrentState;
 int LineNumber;
-//function that returns the mapped index of a variable 
+//function that fprintf(out," s the mapped index of a variable 
 int VarIndex(char *str);
 int SymToType(char* str);
 void yyerror(char* str);
 FILE *yyin;
-
+FILE *out;
 %}
+var_name        [A-Z][0-9]?
+digit           [0-9]
 
 %option noyywrap
 
 %%
 
-","                          {printf("  COMMA");}
-";"                          {printf("  SEMICOLON");}
-" "                          {printf("  SPACE");}
-^[0-9][0-9]*                         {printf("  LINE_NO");}
-[0-9]*                          {printf("  NUM_LITERAL");}
-[0-9]*\.[0-9]*                     {printf("  FLOAT_LITERAL");}
-\"[^a-z\n]+\" {printf ("  STR_LITERAL");}
-[A-Z][0-9]?\([0-9]+(,[0-9]+)?\)    {printf("  DIM_VAR");}
-[A-Z][0-9]?                  {printf("  VAR_NAME");}
-[$#!%]                       {printf("  TYPE");}
-FN[A-Z]                      {printf("  FUN_NAME");}                         
-"\n"                         {printf("  ENDL\n");}
-"("                          {printf("  OBRACE");}
-")"                          {printf("  CBRACE");}
-[-+*/^<>]                    {printf(" : *yytext");}
-"="                            {printf("  EQ_OP");}
-"<>"                         {printf("  RELATIONAL_OP");}
-"<="                         {printf("  RELATIONAL_OP");}
-">="                         {printf("  RELATIONAL_OP");}
-"NOT"                          {printf("  LOGICAL_OP");}
-"AND"                          {printf("  LOGICAL_OP");}
-"OR"                           {printf("  LOGICAL_OP");} 
-"XOR"                          {printf("  LOGICAL_OP");}
-"DATA"                         {printf("  DATA");}
-"INPUT"                        {printf("  INPUT");}
-"LET"                          {printf("  LET");}
-"PRINT"                        {printf("  PRINT");}
-"GOTO"                         {printf("  GOTO");}
-"GOSUB"                        {printf("  GOSUB");}
-REM[^a-z\n]*                   {printf("  REM");}
-"DEF"                          {printf("  DEF");}
-"DIM"                          {printf("  DIM");}
-"IF"                           {printf("  IF");}
-"THEN"                         {printf("  THEN");}
-"FOR"                          {printf("  FOR");}
-"TO"                           {printf("  TO");}
-"STEP"                         {printf("  STEP");}
-"NEXT"                         {printf("  NEXT");}
-"RETURN"                       {printf("  RETURN");}
-"STOP"                         {printf("  STOP");}
-"END"                          {printf("  END");}
+","                          {fprintf(out,"  COMMA");}
+";"                          {fprintf(out,"  SEMICOLON");}
+" "                          {fprintf(out,"  SPACE");}
+^[0-9][0-9]*                         {fprintf(out,"  LINE_NO");}
+[0-9]*                          {fprintf(out,"  NUM_LITERAL");}
+[0-9]*\.[0-9]*                     {fprintf(out,"  FLOAT_LITERAL");}
+\"[^a-z\n]+\" {fprintf (out,"  STR_LITERAL");}
+[A-Z][0-9]?\(({var_name}|{digit}+)(,({var_name}|{digit}+))?\)    {fprintf(out,"  DIM_VAR");}
+[A-Z][0-9]?                  {fprintf(out,"  VAR_NAME");}
+[$#!%]                       {fprintf(out,"  TYPE");}
+FN[A-Z]                      {fprintf(out,"  FUN_NAME");}                         
+"\n"                         {fprintf(out,"  ENDL\n");}
+"("                          {fprintf(out,"  OBRACE");}
+")"                          {fprintf(out,"  CBRACE");}
+"-"                             {fprintf(out,"  SUB_OP");}
+"+"                             {fprintf(out,"  ADD_OP");}
+"*"                             {fprintf(out,"  MUL_OP");}
+"/"                             {fprintf(out,"  DIV_OP");}
+"^"                             {fprintf(out,"  POW_OP");}
+"="                            {fprintf(out,"  EQ_OP");}
+"<"                             {fprintf(out,"  RELATIONAL_OP");}
+">"                             {fprintf(out,"  RELATIONAL_OP");}
+"<>"                         {fprintf(out,"  RELATIONAL_OP");}
+"<="                         {fprintf(out,"  RELATIONAL_OP");}
+">="                         {fprintf(out,"  RELATIONAL_OP");}
+"NOT"                          {fprintf(out,"  LOGICAL_OP");}
+"AND"                          {fprintf(out,"  LOGICAL_OP");}
+"OR"                           {fprintf(out,"  LOGICAL_OP");} 
+"XOR"                          {fprintf(out,"  LOGICAL_OP");}
+"DATA"                         {fprintf(out,"  DATA");}
+"INPUT"                        {fprintf(out,"  INPUT");}
+"LET"                          {fprintf(out,"  LET");}
+"PRINT"                        {fprintf(out,"  PRINT");}
+"GOTO"                         {fprintf(out,"  GOTO");}
+"GOSUB"                        {fprintf(out,"  GOSUB");}
+REM[^a-z\n]*                   {fprintf(out,"  REM");}
+"DEF"                          {fprintf(out,"  DEF");}
+"DIM"                          {fprintf(out,"  DIM");}
+"IF"                           {fprintf(out,"  IF");}
+"THEN"                         {fprintf(out,"  THEN");}
+"FOR"                          {fprintf(out,"  FOR");}
+"TO"                           {fprintf(out,"  TO");}
+"STEP"                         {fprintf(out,"  STEP");}
+"NEXT"                         {fprintf(out,"  NEXT");}
+"STOP"                         {fprintf(out,"  STOP");}
+"END"                          {fprintf(out,"  END");}
 [a-z]                        {CurrentState = 1; yyerror("Error");}
 
 %%
 
 
-//function that returns the mapped index of a variable
+//function that fprintf(out," s the mapped index of a variable
 int VarIndex(char *str)
 {
         int index=0;
         int len = strlen(str);
         if (len==1) {
-                index = str-'A';
+                index = str[0]-'A';
         } else {
                 index = 26*str[1] + 26 + str[0]-'A';
         }
+        printf("%d is index\n",index);
         return index;
 }
 
@@ -86,8 +94,10 @@ int SymToType(char *str) {
 void yyerror(char *str) {printf("err: %s\n", str);}
 
 int main (int argc, char *argv[]){
+    out= fopen("TokenFile.txt", "w");
     yyin = fopen(argv[1], "r");
     yylex();
     fclose(yyin);
+    fclose(out);
     return 0;
 }
