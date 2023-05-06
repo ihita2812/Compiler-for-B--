@@ -8,6 +8,8 @@
         int LineNumber= 0;
         int GoSub = 0;
         int VarStatus[286];
+        int loopCounter=0;
+        int LoopStatus[26];
         //function that returns the mapped index of a variable
         int VarIndex(char *str);
         //function that sets the type of a variable to the respective type.
@@ -30,7 +32,7 @@
 /*--------------------------------------------------------*/
 
 program
-        :lines LINE_NO SPACE END
+        :lines line_number END
         {
                 CurrentState = 6;
                 printf("Collapsing program\n");
@@ -48,33 +50,80 @@ after_line
         |ENDL
 
 line
-        :LINE_NO SPACE stmt
-        {
-                LineNumber=$1;
-        } */
+        :line_number stmt
+ */
 
 lines
         :lines line
         |
 
 line
-        :LINE_NO SPACE stmt ENDL {LineNumber=$1;printf("line no. %d : gosub= %d\n",LineNumber+10,GoSub);}
+        :line_number stmt ENDL {printf("finished this line\n");}
 
+line_number
+        :LINE_NO SPACE
+        {
+                LineNumber=$1;
+                $$=$1;
+        }
 stmt
-        :data_stmt              //written, complete, error checked
-        |fun_def_stmt           //written, complete
+        :{ 
+                CurrentState = 2; 
+        }
+        data_stmt              //written, complete, error checked               
+        |{
+                CurrentState = 3;
+        }  
+        fun_def_stmt           //written, complete
+                 
         |dim_def_stmt           //written
+        {
+                CurrentState=23;
+        }           
         |var_def_stmt           //written, complete
+        {
+                CurrentState = 4;
+        }           
         |in_stmt                //written
+        {
+                CurrentState = 11;
+        }               
         |out_stmt               //written
+        {
+                CurrentState = 12;
+        }               
         |assign_stmt            //written
         |iterative_stmt         //written
+        {
+                CurrentState=18;
+        }
         |control_stmt           //written
+        {
+                CurrentState=17;
+        }
         |fun_call_stmt          //written
+        {
+                CurrentState=13;
+                GoSub++;
+        }
         |STOP
         |goto_stmt              //written
+        {
+                CurrentState=14;
+        }
         |comment_stmt           //written
+        {
+                CurrentState=16;
+        }
         |return_call_stmt
+        {
+                if (GoSub < 1)
+                {       
+                        CurrentState=15;
+                        yyerror("Error");
+                }
+                else GoSub--;
+        }
         |next_stmt
 
 expr
@@ -85,6 +134,9 @@ expr
         |FLOAT_LITERAL
         |STR_LITERAL
         |var
+        /* {
+                if 
+        } */
 
 var
         :VAR_NAME var2
@@ -115,14 +167,13 @@ var2
 /*----------data_stmt----------*/
 
 data_stmt 
-        :{ CurrentState = 2; } 
-        DATA SPACE values
+        :DATA SPACE values
 
 values
         :value after_value
 
 after_value
-        :COMMA values
+        :COMMA SPACE values
         |
 value
         :STR_LITERAL
@@ -132,18 +183,13 @@ value
 /*----------var_def_stmt----------*/
 
 var_def_stmt
-        :{
-                CurrentState = 4;
-        }
-        LET SPACE assign_stmt
+        :LET SPACE assign_stmt
+
 
 /*----------dim_def_stmt----------*/
 
 dim_def_stmt
-        :{
-                CurrentState=23;
-        }
-        DIM SPACE DIM_VAR
+        :DIM SPACE DIM_VAR
         {
                 TypeSet($3, '%');
         }
@@ -151,24 +197,19 @@ dim_def_stmt
 /*----------fun_def_stmt----------*/
 
 fun_def_stmt
-        :{
-                CurrentState = 3;
-                
-        }
-        DEF SPACE FUN_NAME eq_stmt num_expr
-        |{
-                CurrentState = 3;
-        }
-        DEF SPACE FUN_NAME OBRACE var CBRACE eq_stmt num_expr
-        
+        :fun_def fun_body {printf("fun def over\n");}
+
+fun_def
+        :{printf("entered fun def\n");}DEF SPACE FUN_NAME {printf("read fun def\n");}
+
+fun_body
+        :OBRACE var CBRACE eq_stmt num_expr 
+        |{printf("entered body\n");}eq_stmt num_expr{printf("read body\n");}     
 
 /*----------in_stmt----------*/
 
 in_stmt
-        :{
-                CurrentState = 11;
-        }
-        INPUT SPACE variable_names
+        :INPUT SPACE variable_names
         
 variable_names
         :variable_names COMMA SPACE var
@@ -177,10 +218,7 @@ variable_names
 /*----------out_stmt----------*/
 
 out_stmt
-        :{
-                CurrentState = 12;
-        }
-        PRINT SPACE things
+        :PRINT SPACE things
         
 
 things
@@ -194,6 +232,13 @@ delimiter
 
 thing
         :var
+        {
+                if (VarStatus[$1] == 0) {
+                        //invalid variable
+                        CurrentState = 25;
+                        yyerror("error");
+                }
+        }
         |num_expr
         |NUM_LITERAL
         |FLOAT_LITERAL
@@ -201,13 +246,22 @@ thing
 
 /*----------assign_stmt----------*/
 
-
-
 eq_stmt
         :space_eqs EQ_OP space_eqs
+
 space_eqs
         :SPACE
         |
+
+assign_stmt
+        :var eq_stmt rhs
+        {
+                $$ = $1; //the value of assign_stmt becomes the index of the variable to which assignment occured
+                if (TypeCheck($1, $3))
+                {
+                        yyerror("Error");
+                } //int
+        }
 
 rhs
         :{
@@ -223,23 +277,16 @@ rhs
         }
         STR_LITERAL {$$=1;}
         |{
+                CurrentState=22;
+        }
+        var {$$=VarStatus[$2];}
+        |{
                 CurrentState=9;
         }
         num_expr {$$=2;}
-        |{
-                CurrentState=12;
-        }
-        var {$$=VarStatus[$2];}
+        
 
-assign_stmt
-        :var eq_stmt rhs
-        {
-                printf("Checking type compatibility for %d : %d\n", VarStatus[$1],$3);
-                if (TypeCheck($1, $3))
-                {
-                        yyerror("Error");
-                } //int
-        }
+
         /* |{
                 CurrentState=20;
         }
@@ -304,48 +351,27 @@ assign_stmt
 /*----------fun_call_stmt----------*/
 
 fun_call_stmt
-        :{
-                CurrentState=13;
-                GoSub = 1;
-        }
-        GOSUB SPACE NUM_LITERAL
+        :GOSUB SPACE NUM_LITERAL
         
 
 return_call_stmt
-        :{
-                if (GoSub != 1)
-                {       
-                        CurrentState=15;
-                        yyerror("Error");
-                }
-                else GoSub=0;
-        }
-        RETURN
+        :RETURN
         
 /*----------goto_stmt----------*/
 
 goto_stmt
-        :{
-                CurrentState=14;
-        }
-        GOTO SPACE NUM_LITERAL
+        :GOTO SPACE NUM_LITERAL
         
 /*----------comment_stmt----------*/
 
 comment_stmt
-        :{
-                CurrentState=16;
-        }
-        REM
+        :REM
         
 
 /*----------control_stmt----------*/
 
 control_stmt
-        :{
-                CurrentState=17;
-        }
-        IF SPACE rel_expr SPACE THEN SPACE NUM_LITERAL
+        :IF SPACE rel_expr SPACE THEN SPACE NUM_LITERAL
         
 
 /*----------iterative_stmt----------*/
@@ -355,15 +381,21 @@ it1
         |
 
 iterative_stmt
-        :{
-                CurrentState=18;
+        :FOR SPACE assign_stmt SPACE TO SPACE num_expr it1
+        {
+                LoopStatus[loopCounter] = $3;loopCounter++;
         }
-        FOR SPACE assign_stmt SPACE TO SPACE num_expr it1
         
 next_stmt
         :NEXT SPACE VAR_NAME
         {
-           
+           loopCounter--;
+           if (LoopStatus[loopCounter] == $3) {
+                //correct variable
+           } else {
+                CurrentState = 24;
+                yyerror("error");
+           }
         }
 
 /*---------------------------------------*/
@@ -372,9 +404,18 @@ next_stmt
 
 num_expr
         :OBRACE expr CBRACE
-        |expr num_op expr
+        |{printf("Entering num expr\n");}expr num_op expr{printf("leaving num expr\n");}
         |SUB_OP expr
 
+/*
+num_expr2
+        :OBRACE expr CBRACE
+        |expr num_op expr
+        |SUB_OP expr
+        {
+                if $2
+        }
+*/
 num_op
         :ADD_OP
         |SUB_OP
@@ -448,7 +489,8 @@ void yyerror(const char* str)
                 case 21: printf("Error in LINE %d: Undeclared identifier used.\n", LineNumber); break;
                 case 22: printf("Error in LINE %d: Incompatible identifier assigned to variable.\n", LineNumber); break;
                 case 23: printf("Error in LINE %d: Expected DIM var1(number), etc.\n",LineNumber);break;
-                default: printf("Syntax error %d.\n",LineNumber);
+                case 24: printf("Error in LINE %d: Variable in NEXT statement not matching FOR statement\n.",LineNumber);break;
+                default: printf("Syntax error in line %d.\n",LineNumber);
         }
 }
 int yywrap(void)
