@@ -11,7 +11,7 @@
         //function that returns the mapped index of a variable
         int VarIndex(char *str);
         //function that sets the type of a variable to the respective type.
-        int TypeSet(int ind, char str1);
+        int TypeSet(int ind, int type);
         //function that checks whether variable called 'str' is of 'type'. [0 for ture, 1 for false]
         int TypeCheck(int ind, int type);
         FILE *yyin;
@@ -30,36 +30,35 @@
 /*--------------------------------------------------------*/
 
 program
-        :lines 
+        :lines LINE_NO SPACE END
         {
                 CurrentState = 6;
                 printf("Collapsing program\n");
         }
 
-lines
-        :line lines
+/* lines
+        :line after_line
         {
                 CurrentState = 7;
                 printf("Collapsing lines\n");
         }
-        |line
-        |end_line
         
-end_line
-        :LINE_NO SPACE END
-        {
-                CurrentState = 5;
-                LineNumber = $1;
-                printf("Collapsing endline\n");
-        }
+after_line
+        :lines
+        |ENDL
 
 line
         :LINE_NO SPACE stmt
         {
-                LineNumber = $1;
-                CurrentState = 8;
-                printf("Collapsing line\n");
-        }
+                LineNumber=$1;
+        } */
+
+lines
+        :lines line
+        |
+
+line
+        :LINE_NO SPACE stmt ENDL {LineNumber=$1;printf("line no. %d : gosub= %d\n",LineNumber+10,GoSub);}
 
 stmt
         :data_stmt              //written, complete, error checked
@@ -72,7 +71,7 @@ stmt
         |iterative_stmt         //written
         |control_stmt           //written
         |fun_call_stmt          //written
-        |STOP ENDL
+        |STOP
         |goto_stmt              //written
         |comment_stmt           //written
         |return_call_stmt
@@ -96,7 +95,7 @@ var
         |DIM_VAR
         {       
                 $$ = $1;
-                TypeSet($$, '%');
+                TypeSet($$, 2);
         }
 
 var2
@@ -106,7 +105,7 @@ var2
         }
         |
         {
-                $$='%';
+                $$=2;
         }
 
 /*----------------------------------------*/
@@ -117,12 +116,14 @@ var2
 
 data_stmt 
         :{ CurrentState = 2; } 
-        DATA SPACE values ENDL
+        DATA SPACE values
 
 values
-        :value COMMA values 
-        |value
+        :value after_value
 
+after_value
+        :COMMA values
+        |
 value
         :STR_LITERAL
         |NUM_LITERAL
@@ -134,7 +135,7 @@ var_def_stmt
         :{
                 CurrentState = 4;
         }
-        LET SPACE assign_stmt ENDL
+        LET SPACE assign_stmt
 
 /*----------dim_def_stmt----------*/
 
@@ -142,7 +143,7 @@ dim_def_stmt
         :{
                 CurrentState=23;
         }
-        DIM SPACE DIM_VAR ENDL
+        DIM SPACE DIM_VAR
         {
                 TypeSet($3, '%');
         }
@@ -154,11 +155,11 @@ fun_def_stmt
                 CurrentState = 3;
                 
         }
-        DEF SPACE FUN_NAME eq_stmt num_expr ENDL
+        DEF SPACE FUN_NAME eq_stmt num_expr
         |{
                 CurrentState = 3;
         }
-        DEF SPACE FUN_NAME OBRACE var CBRACE eq_stmt num_expr ENDL
+        DEF SPACE FUN_NAME OBRACE var CBRACE eq_stmt num_expr
         
 
 /*----------in_stmt----------*/
@@ -167,7 +168,7 @@ in_stmt
         :{
                 CurrentState = 11;
         }
-        INPUT SPACE variable_names ENDL
+        INPUT SPACE variable_names
         
 variable_names
         :variable_names COMMA SPACE var
@@ -179,7 +180,7 @@ out_stmt
         :{
                 CurrentState = 12;
         }
-        PRINT SPACE things ENDL
+        PRINT SPACE things
         
 
 things
@@ -208,22 +209,43 @@ space_eqs
         :SPACE
         |
 
-assign_stmt
+rhs
         :{
                 CurrentState=20;
         }
-        var eq_stmt NUM_LITERAL
+        NUM_LITERAL {$$=2;}
+        |{
+                CurrentState=20;
+        }
+        FLOAT_LITERAL {$$=2;}
+        |{
+                CurrentState=10;
+        }
+        STR_LITERAL {$$=1;}
+        |{
+                CurrentState=9;
+        }
+        num_expr {$$=2;}
+        |{
+                CurrentState=12;
+        }
+        var {$$=VarStatus[$2];}
+
+assign_stmt
+        :var eq_stmt rhs
         {
-                if (TypeCheck($2, 2))
+                printf("Checking type compatibility for %d : %d\n", VarStatus[$1],$3);
+                if (TypeCheck($1, $3))
                 {
                         yyerror("Error");
                 } //int
         }
-        |{
+        /* |{
                 CurrentState=20;
         }
         var eq_stmt FLOAT_LITERAL
         {
+                printf("Checking type compatibility for %d : %d\n", $1,2);
                 if (TypeCheck($2, 2))
                 {
                         yyerror("Error");
@@ -234,6 +256,7 @@ assign_stmt
         }
         var eq_stmt STR_LITERAL
         {       
+                printf("Checking type compatibility for %d : %d\n", $1,2);
                 if (TypeCheck($2, 1))
                 {
                         yyerror("Error");
@@ -244,6 +267,7 @@ assign_stmt
         }
         var eq_stmt num_expr
         {
+                printf("Checking type compatibility for %d : %d\n", $1,2);
                 if (TypeCheck($2, 2))
                 {
                         yyerror("Error");
@@ -254,6 +278,7 @@ assign_stmt
         }
         var eq_stmt var 
         {
+                printf("Checking type compatibility for %d : %d\n", $1,$3);
                 if (VarStatus[$4]==0)
                 {
                         yyerror("Error");
@@ -274,7 +299,7 @@ assign_stmt
                                 yyerror("Error");
                         }
                 } //invalid variable assigned
-        }
+        } */
 
 /*----------fun_call_stmt----------*/
 
@@ -283,7 +308,7 @@ fun_call_stmt
                 CurrentState=13;
                 GoSub = 1;
         }
-        GOSUB SPACE NUM_LITERAL ENDL
+        GOSUB SPACE NUM_LITERAL
         
 
 return_call_stmt
@@ -295,7 +320,7 @@ return_call_stmt
                 }
                 else GoSub=0;
         }
-        RETURN ENDL
+        RETURN
         
 /*----------goto_stmt----------*/
 
@@ -303,7 +328,7 @@ goto_stmt
         :{
                 CurrentState=14;
         }
-        GOTO SPACE NUM_LITERAL ENDL
+        GOTO SPACE NUM_LITERAL
         
 /*----------comment_stmt----------*/
 
@@ -311,7 +336,7 @@ comment_stmt
         :{
                 CurrentState=16;
         }
-        REM ENDL
+        REM
         
 
 /*----------control_stmt----------*/
@@ -320,14 +345,14 @@ control_stmt
         :{
                 CurrentState=17;
         }
-        IF SPACE rel_expr SPACE THEN SPACE NUM_LITERAL ENDL
+        IF SPACE rel_expr SPACE THEN SPACE NUM_LITERAL
         
 
 /*----------iterative_stmt----------*/
 
 it1
-        :SPACE STEP SPACE num_expr ENDL
-        |ENDL
+        :SPACE STEP SPACE num_expr
+        |
 
 iterative_stmt
         :{
@@ -336,7 +361,7 @@ iterative_stmt
         FOR SPACE assign_stmt SPACE TO SPACE num_expr it1
         
 next_stmt
-        :NEXT SPACE VAR_NAME ENDL
+        :NEXT SPACE VAR_NAME
         {
            
         }
@@ -371,15 +396,7 @@ log_expr
 
 
 //function that sets the type of a variable to the respective type.
-int TypeSet(int ind, char str1) {
-        int type=0;
-        switch (str1)
-        {
-                case '$': type=1; break; //string
-                case '%': type=2; break; //int
-                case '!': type=3; break; //single precision
-                case '#': type=4; break; //double precision
-        }
+int TypeSet(int ind, int type) {
         VarStatus[ind] = type;
         return 0;
 }
